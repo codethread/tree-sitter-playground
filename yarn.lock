@@ -539,11 +539,6 @@ ms@2.1.2:
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.2.tgz#d09d1f357b443f493382a8eb3ccd183872ae6009"
   integrity sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==
 
-nan@2.14.2:
-  version "2.14.2"
-  resolved "https://registry.yarnpkg.com/nan/-/nan-2.14.2.tgz#f5376400695168f4cc694ac9393d0c9585eeea19"
-  integrity sha512-M2ufzIiINKCuDfBSAUr1vWQ+vuVcA9kqx8JJUsbQi6yf1uGRyb7HfpdfUr5qLXf3B/t8dPvcjhKMmlfnP47EzQ==
-
 nan@^2.12.1, nan@^2.14.2:
   version "2.15.0"
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.15.0.tgz#3f34a473ff18e15c1b5626b62903b5ad6e665fee"
@@ -645,27 +640,19 @@ tree-sitter-cli@^0.20.1:
   resolved "https://registry.yarnpkg.com/tree-sitter-cli/-/tree-sitter-cli-0.20.1.tgz#9c6f1c79fd87d2a73a232dbceae673240741d785"
   integrity sha512-I0Gp4ThRp39TDnBAaZKiogvoE85MSeL6/ILZMXbzeEo8hUsudpVhEHRE4CU+Bk5QUaiMiDkD+ZIL3gT2zZ++wg==
 
-"tree-sitter-clojure@git://github.com/sogaiu/tree-sitter-clojure.git#95c7959c461406381b42113dcf4591008c663d21":
-  version "0.0.8"
-  resolved "git://github.com/sogaiu/tree-sitter-clojure.git#95c7959c461406381b42113dcf4591008c663d21"
-  dependencies:
-    nan "2.14.2"
-    web-tree-sitter "0.19.1"
-
-tree-sitter-commonlisp@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/tree-sitter-commonlisp/-/tree-sitter-commonlisp-0.2.0.tgz#82d34700994766ddd1caac6c28f8baf90e26c32a"
-  integrity sha512-A8oys0ODVbI8B2zk5Ro9VXRtzhGEKmO4NEIrt/xdlz0+oWJ5RYN6rnZmxwQTVeyy7IOtwYcq1q9yYmZmm0Df8Q==
-  dependencies:
-    nan "^2.14.2"
-    tree-sitter-clojure "git://github.com:sogaiu/tree-sitter-clojure.git#95c7959c461406381b42113dcf4591008c663d21"
-
 tree-sitter-javascript@^0.19.0:
   version "0.19.0"
   resolved "https://registry.yarnpkg.com/tree-sitter-javascript/-/tree-sitter-javascript-0.19.0.tgz#20fc0da277502dac2bb3bf9ff75372268e761558"
   integrity sha512-SNykDdNgmlJZhX02ZIu0TQF9P7t847jV7769SxA9XrZ2QXjofQsVTMEi9+LpXZKsI0UoFYI25FnZm3fFm0z2yw==
   dependencies:
     nan "^2.12.1"
+
+tree-sitter-tsq@^0.19.0:
+  version "0.19.0"
+  resolved "https://registry.yarnpkg.com/tree-sitter-tsq/-/tree-sitter-tsq-0.19.0.tgz#bfdc203668150b81a26d152de930aa7f24c2d2cd"
+  integrity sha512-4KZ392gUmsz0F0gA4RcSNCS+RSmZiWziSczAcj4KdUZBGk2j45vV0bHswOMP98WlpudIyOh8gL3jWXd7mgK68w==
+  dependencies:
+    nan "^2.14.2"
 
 ts-toolbelt@^9.6.0:
   version "9.6.0"
@@ -701,11 +688,6 @@ vite@^2.5.7, vite@^2.6.13:
     rollup "^2.57.0"
   optionalDependencies:
     fsevents "~2.3.2"
-
-web-tree-sitter@0.19.1:
-  version "0.19.1"
-  resolved "https://registry.yarnpkg.com/web-tree-sitter/-/web-tree-sitter-0.19.1.tgz#2d93df1d65b3850870b3ebca8ae661eb9c798bc9"
-  integrity sha512-Wlveh+zdegmNdK733B18pf+NmliKs2t5+Aid8IOFIBV2MqJmnYVo3AdukbdZJ+iIxzBnIreYFKfcFFCWVEf4AA==
 
 web-tree-sitter@^0.19.4:
   version "0.19.4"

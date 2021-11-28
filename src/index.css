@@ -58,8 +58,16 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+textarea {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
 
+p {
+    text-align: left;
+}
