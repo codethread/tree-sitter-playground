@@ -12,39 +12,40 @@
 
 .page {
     flex-grow: 1;
-    width: 100%;
-  display: grid;
-  grid-template-rows: 30px 1fr 4fr 2fr;
-  grid-template-columns: 1fr 1fr;
-  grid-template-areas:
-    "header header"
-    "query query"
-    "source tree"
-    "output output";
-  grid-gap: 10px;
+  width: 95%;
+  margin-top: 20px;
+    display: grid;
+    grid-template-rows: 30px 1fr 4fr 2fr;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+	"header header"
+	"query query"
+	"source tree"
+	"output output";
+    grid-gap: 10px;
 }
 
 .header {
-  grid-area: header;
+    grid-area: header;
 }
 
 .query {
-  grid-area: query;
+    grid-area: query;
 }
 
 .source {
-  grid-area: source;
+    grid-area: source;
 }
 
 .tree {
-  grid-area: tree;
+    grid-area: tree;
 }
 
 .output {
-  grid-area: output;
+    grid-area: output;
 }
 
 .borderBox {
-  border: thin solid grey;
-  border-radius: 5px;
+    border: thin solid grey;
+    border-radius: 5px;
 }

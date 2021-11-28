@@ -7,7 +7,7 @@ yarn dev
 ### build grammers
 ```
 # add grammer
-yarn install --save-dev tree-sitter-javascript
+yarn add -D tree-sitter-javascript
 
 # build wasm
 yarn tree-sitter build-wasm node_modules/tree-sitter-javascript
