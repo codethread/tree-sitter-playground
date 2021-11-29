@@ -10,24 +10,25 @@ export default function prettyPrint(tree: Tree): string[] {
   visit(
     cursor,
     (c) => {
-      // console.log(c.nodeType, c.nodeText);
       if (c.nodeType === "program") return;
-      // if (c.nodeType === "node_name") {
-      //   console.log(c.nodeText);
-      // }
+
       if (c.nodeType === "field_name") {
-        lines[lastIndex++] = c.nodeText + ":";
-        console.log(c.currentFieldName());
+        console.log(lines[lines.length - 1]);
+        if (lines[lines.length - 1].endsWith(":")) {
+          lines[lines.length - 1] += " " + c.nodeText;
+        } else {
+          lines[lastIndex++] = c.nodeText + ":";
+        }
       }
+
       if (c.nodeType === "node_name") {
-        console.log(c.nodeText);
-        // console.log(c.currentNode().parent?.);
-        // console.log(c.currentFieldId());
-        console.log("\n");
-        // lines[lastIndex - 1] += " " + c.nodeText;
-        lines[lastIndex++] = c.nodeText;
+        console.log(lines[lines.length - 1]);
+        if (lines[lines.length - 1].endsWith(":")) {
+          lines[lines.length - 1] += " " + c.nodeText;
+        } else {
+          lines[lastIndex++] = c.nodeText;
+        }
       }
-      // console.log(c.nodeType, c.currentFieldName(), `"${c.nodeText}"`);
     },
     { namedOnly: true }
   );
