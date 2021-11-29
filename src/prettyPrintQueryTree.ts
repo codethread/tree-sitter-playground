@@ -1,4 +1,8 @@
 import { Tree, TreeCursor } from "web-tree-sitter";
+
+/**
+ * Here be dragons
+ */
 export default function prettyPrint(tree: Tree): string[] {
   console.log("text:", tree.rootNode.text);
   console.log("tree:", tree.rootNode.toString());
@@ -6,27 +10,42 @@ export default function prettyPrint(tree: Tree): string[] {
 
   const lines: string[] = [""];
   let lastIndex = 1;
+  let lastDepth = 0;
+  let indent = "";
 
   visit(
     cursor,
-    (c) => {
+    (c, depth = 0) => {
       if (c.nodeType === "program") return;
 
       if (c.nodeType === "field_name") {
-        console.log(lines[lines.length - 1]);
         if (lines[lines.length - 1].endsWith(":")) {
           lines[lines.length - 1] += " " + c.nodeText;
         } else {
-          lines[lastIndex++] = c.nodeText + ":";
+          if (depth > lastDepth) {
+            indent += " ";
+            lastDepth = depth;
+          } else if (depth < lastDepth) {
+            indent = indent.slice(0, -1);
+            lastDepth = depth;
+          }
+          lines[lastIndex++] = indent + c.nodeText + ":";
         }
       }
 
       if (c.nodeType === "node_name") {
-        console.log(lines[lines.length - 1]);
         if (lines[lines.length - 1].endsWith(":")) {
           lines[lines.length - 1] += " " + c.nodeText;
         } else {
-          lines[lastIndex++] = c.nodeText;
+          if (depth > lastDepth) {
+            indent += " ";
+            lastDepth = depth;
+          } else if (depth < lastDepth) {
+            indent = indent.slice(0, -1);
+            lastDepth = depth;
+          }
+
+          lines[lastIndex++] = indent + c.nodeText;
         }
       }
     },
@@ -34,55 +53,32 @@ export default function prettyPrint(tree: Tree): string[] {
   );
 
   return lines;
-
-  const prog = tree.rootNode;
-  debugger;
-  if (!prog) throw new Error("nop[e");
-  console.log(prog.type);
-
-  return prog.children.reduce<string[]>(
-    (lines, node) => {
-      console.log("node:", node.text);
-      const lastLineN = lines.length - 1;
-      let lastLine = lines[lastLineN];
-
-      if (!node.isNamed) {
-        lastLine += node.text;
-        console.log("l", lastLine);
-        return lines;
-      }
-      return lines;
-    },
-    [""]
-  );
 }
-
-const nodeTypes = ["node_name"] as const;
-type NodeType = typeof nodeTypes[number];
 
 function visit(
   c: TreeCursor,
-  cb: (node: TreeCursor) => void,
-  args?: { namedOnly: true }
+  cb: (node: TreeCursor, depth?: number) => void,
+  args?: { namedOnly: true },
+  depth = 0
 ): null {
   if (!args?.namedOnly || (c.nodeIsNamed && args?.namedOnly)) {
-    cb(c);
+    cb(c, depth);
   }
 
   const hasChild = c.gotoFirstChild();
 
   if (hasChild) {
-    return visit(c, cb, args);
+    return visit(c, cb, args, depth + 1);
   } else {
     const hasSibling = c.gotoNextSibling();
 
     if (hasSibling) {
-      return visit(c, cb, args);
+      return visit(c, cb, args, depth);
     } else {
-      const hasAncestor = findAncestorWithUnvistedChild(c);
+      const [hasAncestor, back] = findAncestorWithUnvistedChild(c);
 
       if (hasAncestor) {
-        return visit(c, cb, args);
+        return visit(c, cb, args, depth - back);
       }
     }
   }
@@ -90,14 +86,17 @@ function visit(
   return null;
 }
 
-function findAncestorWithUnvistedChild(c: TreeCursor): boolean {
+function findAncestorWithUnvistedChild(
+  c: TreeCursor,
+  depth = 0
+): [hasAncestor: boolean, depth: number] {
   const hasParent = c.gotoParent();
 
-  if (!hasParent) return false;
+  if (!hasParent) return [false, depth];
 
   const hasSibling = c.gotoNextSibling();
 
-  if (hasSibling) return true;
+  if (hasSibling) return [true, depth + 1];
 
-  return findAncestorWithUnvistedChild(c);
+  return findAncestorWithUnvistedChild(c, depth + 1);
 }
