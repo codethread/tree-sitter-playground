@@ -10,43 +10,15 @@ export default function prettyPrint(tree: Tree): string[] {
 
   const lines: string[] = [""];
   let lastIndex = 1;
-  let lastDepth = 0;
-  let indent = "";
+  let indent = " ";
 
   visit(
     cursor,
     (c, depth = 0) => {
-      if (c.nodeType === "program") return;
-
-      if (c.nodeType === "field_name") {
-        if (lines[lines.length - 1].endsWith(":")) {
-          lines[lines.length - 1] += " " + c.nodeText;
-        } else {
-          if (depth > lastDepth) {
-            indent += " ";
-            lastDepth = depth;
-          } else if (depth < lastDepth) {
-            indent = indent.slice(0, -1);
-            lastDepth = depth;
-          }
-          lines[lastIndex++] = indent + c.nodeText + ":";
-        }
-      }
-
       if (c.nodeType === "node_name") {
-        if (lines[lines.length - 1].endsWith(":")) {
-          lines[lines.length - 1] += " " + c.nodeText;
-        } else {
-          if (depth > lastDepth) {
-            indent += " ";
-            lastDepth = depth;
-          } else if (depth < lastDepth) {
-            indent = indent.slice(0, -1);
-            lastDepth = depth;
-          }
-
-          lines[lastIndex++] = indent + c.nodeText;
-        }
+        const fieldName = c.currentNode().parent?.previousNamedSibling?.text;
+        const prefix = fieldName ? fieldName + " : " : "";
+        lines[lastIndex++] = indent.repeat(depth) + prefix + c.nodeText;
       }
     },
     { namedOnly: true }
