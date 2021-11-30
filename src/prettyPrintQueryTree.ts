@@ -4,8 +4,6 @@ import { Tree, TreeCursor } from "web-tree-sitter";
  * Here be dragons
  */
 export default function prettyPrint(tree: Tree): string[] {
-  console.log("text:", tree.rootNode.text);
-  console.log("tree:", tree.rootNode.toString());
   const cursor = tree.walk();
 
   const lines: string[] = [""];

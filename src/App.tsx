@@ -6,15 +6,26 @@ import {
   Match,
   Switch,
 } from "solid-js";
-import Parser from "web-tree-sitter";
+import Parser, { Query } from "web-tree-sitter";
 import styles from "./App.module.css";
 import prettyPrint from "./prettyPrintQueryTree";
 
+interface Parsers {
+  js: {
+    parser: Parser;
+    query: (src: string) => Query;
+  };
+  ql: {
+    parser: Parser;
+    query: (src: string) => Query;
+  };
+}
+
 const App: Component = () => {
-  const [parsers] = createResource(async () => {
+  const [parsers] = createResource<Parsers>(async () => {
     await Parser.init();
 
-    const [js, cl] = await Promise.all([
+    const [js, ql] = await Promise.all([
       Parser.Language.load("tree-sitter-javascript.wasm"),
       Parser.Language.load("tree-sitter-tsq.wasm"),
     ]);
@@ -23,14 +34,19 @@ const App: Component = () => {
     jsParser.setLanguage(js);
 
     const qlParser = new Parser();
-    qlParser.setLanguage(cl);
+    qlParser.setLanguage(ql);
 
-    return [jsParser, qlParser];
+    // const q = js.query("(variable_declarator (string) @mynum)");
+
+    return {
+      js: { parser: jsParser, query: (q: string) => js.query(q) },
+      ql: { parser: qlParser, query: (q: string) => ql.query(q) },
+    };
   });
 
   return (
     <div class={styles.App}>
-      <Switch fallback={<Page parsers={parsers() as Parser[]} />}>
+      <Switch fallback={<Page parsers={parsers() as Parsers} />}>
         <Match when={parsers.error}>
           <pre>{parsers.error}</pre>
         </Match>
@@ -42,20 +58,41 @@ const App: Component = () => {
   );
 };
 
-const Page: Component<{ parsers: Parser[] }> = ({
-  parsers: [jsParser, qlParser],
-}) => {
+const Page: Component<{ parsers: Parsers }> = ({ parsers }) => {
+  const [query, setQuery] = createSignal(
+    "(variable_declarator (string) @mynum)"
+  );
   const [code, setCode] = createSignal("let x = 'type in here'");
+
   const trees = () => {
-    const jsTree = jsParser.parse(code());
-    const qlTree = qlParser.parse(jsTree.rootNode.toString());
+    const jsTree = parsers.js.parser.parse(code());
+    const qlTree = parsers.ql.parser.parse(jsTree.rootNode.toString());
     return { jsTree, qlTree };
+  };
+
+  const match = () => {
+    try {
+      const myq = parsers.js.query(query());
+      return myq;
+    } catch (e) {
+      console.warn(e);
+      return null;
+    }
   };
 
   return (
     <div class={styles.page}>
       <div class={styles.header}>Tree-sitter Playground</div>
-      <div class={`${styles.query} ${styles.borderBox}`}>query</div>
+      <div class={`${styles.query} ${styles.borderBox}`}>
+        <textarea
+          class={styles.textarea}
+          onInput={(e) => {
+            setQuery(e.target.value as string);
+          }}
+        >
+          {query()}
+        </textarea>
+      </div>
       <div class={`${styles.source} ${styles.borderBox}`}>
         <textarea
           class={styles.textarea}
@@ -73,7 +110,22 @@ const Page: Component<{ parsers: Parser[] }> = ({
           </Index>
         </p>
       </div>
-      <div class={`${styles.output} ${styles.borderBox}`}>output</div>
+      <div class={`${styles.output} ${styles.borderBox}`}>
+        <Index
+          each={
+            match()
+              ?.matches(trees().jsTree.rootNode)
+              .map(
+                (n) =>
+                  `${n.pattern} : ${n.captures.map(
+                    (n) => `${n.name} : ${n.node.text}`
+                  )}`
+              ) ?? []
+          }
+        >
+          {(line) => <p>{line()}</p>}
+        </Index>
+      </div>
     </div>
   );
 };
