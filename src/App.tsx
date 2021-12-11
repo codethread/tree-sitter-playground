@@ -73,6 +73,8 @@ const Page: Component<{ parsers: Parsers }> = ({ parsers }) => {
   const match = () => {
     try {
       const myq = parsers.js.query(query());
+      console.log(myq.captures(trees().jsTree.rootNode));
+      console.log(myq.matches(trees().jsTree.rootNode));
       return myq;
     } catch (e) {
       console.warn(e);
